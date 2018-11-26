@@ -1,12 +1,15 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import {
   withStyles, Drawer, List, ListItem, ListItemText, Divider,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { MenuDrawerItems } from '../utils/constant';
 
-function MenuDrawer({ classes, children, open }) {
+function MenuDrawer({
+  classes, children, open, history,
+}) {
+  const redirectTo = text => () => history.push(`/${text.toLocaleLowerCase()}`);
   return (
     <Drawer
       className={classes.drawer}
@@ -19,10 +22,8 @@ function MenuDrawer({ classes, children, open }) {
       <div className={classes.toolbar} />
       <List>
         {MenuDrawerItems.map((text, index) => (
-          <ListItem button key={text}>
-            <Link to={`/${text.toLocaleLowerCase()}`}>
-              <ListItemText primary={text} />
-            </Link>
+          <ListItem button key={text} onClick={redirectTo(text)}>
+            <ListItemText primary={text} />
           </ListItem>
         ))}
       </List>
@@ -30,13 +31,14 @@ function MenuDrawer({ classes, children, open }) {
   );
 }
 
-const ms = ({ ui }) => ({
+const ms = ({ ui }, ownProps) => ({
+  ...ownProps,
   open: ui.menuDrawerOpen,
 });
 
 const drawerWidth = 240;
 
-export default connect(ms)(withStyles(theme => ({
+export default withRouter(connect(ms)(withStyles(theme => ({
   root: {
     display: 'flex',
   },
@@ -56,4 +58,4 @@ export default connect(ms)(withStyles(theme => ({
     transition: '0.2s ease-in',
     width: 0,
   },
-}))(MenuDrawer));
+}))(MenuDrawer)));

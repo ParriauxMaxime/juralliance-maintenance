@@ -1,47 +1,67 @@
+// @flow
+
 import React from 'react';
 import {
-  withStyles, Table, TableHead, TableBody, TableRow, TableCell,
+  withStyles, Table, Paper,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
+import TableManager from './CRUDTable.logic';
 
 function CRUDTable({
-  classes, children, rows, fields, mapping,
+  classes,
+  children,
+  rows,
+  fields,
+  mapping,
+  reducer,
+  orderBy,
+  actions,
+  onEdit,
+  onDelete,
+  order,
+}: {
+  classes: Object,
+  children: ?any,
+  rows: [any],
+  fields: [string],
+  actions: [string],
+  mapping: Object,
+  reducer: string,
+  orderBy: ?string,
+  order: ?string
 }) {
+  const manager = new TableManager({
+    rows,
+    fields,
+    reducer,
+    onEdit,
+    onDelete,
+    options: {
+      orderBy,
+      order,
+      actions,
+    },
+  });
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {
-        fields.map(field => (
-          <TableCell key={`header-${field}`}>
-            {
-              rows.map((row, index) => (
-                <TableRow key={`row-${field[0] || 'test'}-${index}`}>
-                  {
-                  fields.map(field => (
-                    <TableCell key={`${field}`}>
-                      {row[field] || 'default'}
-                    </TableCell>
-                  ))
-                  }
-                </TableRow>
-              ))
-            }
-          </TableCell>
-        ))
-      }
-        </TableRow>
-      </TableHead>
-      <TableBody />
-    </Table>
+    <React.Fragment>
+      <Paper>
+        <Table>
+          {manager.renderHead()}
+          {manager.renderBody()}
+        </Table>
+      </Paper>
+    </React.Fragment>
   );
 }
 
 const ms = (store, ownProps) => ({
-  fields: [],
-  rows: [],
-  mapping: {},
-
+  ...ownProps,
+  fields: ownProps.fields || [],
+  rows: ownProps.rows || [],
+  mapping: ownProps.mapping || {},
+  reducer: ownProps.reducer || '',
+  orderBy: store[ownProps.reducer]?.tableOptions?.orderBy,
+  order: store[ownProps.reducer]?.tableOptions?.order,
 });
 
 export default connect(ms)(withStyles(theme => ({

@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = {
   context: `${__dirname}/src/client`,
+  mode: 'development',
   entry: './index.js',
   module: {
     rules: [
@@ -22,6 +23,11 @@ module.exports = {
         ],
       },
     ],
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   plugins: [
     new HtmlWebPackPlugin({

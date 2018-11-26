@@ -1,4 +1,4 @@
-import { UserBase } from './utils';
+const { UserBase } = require('./utils');
 
 const mongoose = require('mongoose');
 

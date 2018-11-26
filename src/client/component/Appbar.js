@@ -1,6 +1,6 @@
-import React from "react";
-import { connect } from 'react-redux'
-import { 
+import React from 'react';
+import { connect } from 'react-redux';
+import {
   withStyles,
   AppBar,
   FormGroup,
@@ -10,11 +10,13 @@ import {
   IconButton,
   Typography,
   Menu,
-  MenuItem
-} from "@material-ui/core";
-import MenuIcon from '@material-ui/icons/Menu'
-import AccountCircle from '@material-ui/icons/AccountCircle'
-import { Action, MENU_DRAWER_CLICK } from "../reducer/action";
+  MenuItem,
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import withRouter from 'react-router/withRouter';
+import { Action, MENU_DRAWER_CLICK, LOG_OUT } from '../reducer/action';
+import { fetchEndpoint } from '../utils/apiManager';
 
 const styles = theme => ({
   root: {
@@ -39,14 +41,14 @@ class Appbar extends React.Component {
   };
 
   handleDrawerClick = () => {
-    this.props.dispatch(new Action(MENU_DRAWER_CLICK))
+    this.props.dispatch(new Action(MENU_DRAWER_CLICK));
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({ auth: event.target.checked });
   };
 
-  handleMenu = event => {
+  handleMenu = (event) => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
@@ -55,56 +57,61 @@ class Appbar extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, logout } = this.props;
     const { auth, anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
-        <AppBar position="relative" className={classes.appBar}>
-          <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawerClick}>
-              <MenuIcon />
+      <AppBar position="relative" className={classes.appBar}>
+        <Toolbar>
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawerClick}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+              Juralliance maintenance
+          </Typography>
+          {auth && (
+          <div>
+            <IconButton
+              aria-owns={open ? 'menu-appbar' : undefined}
+              aria-haspopup="true"
+              onClick={this.handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
             </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Photos
-            </Typography>
-            {auth && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                </Menu>
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={this.handleClose}
+            >
+              <MenuItem onClick={this.handleClose}>Mon Profil</MenuItem>
+              <MenuItem onClick={logout}>Se déconnecter</MenuItem>
+            </Menu>
+          </div>
+          )}
+        </Toolbar>
+      </AppBar>
     );
   }
 }
 
-const ms = ({ui}) => {
-  return {}
-}
+const ms = ({ ui }) => ({});
+const md = (dispatch, { history }) => ({
+  dispatch,
+  logout: () => {
+    history.push('/login');
+    dispatch(new Action(LOG_OUT));
+  },
+});
 
-export default connect(ms)(withStyles(styles)(Appbar));
+export default withRouter(connect(ms, md)(withStyles(styles)(Appbar)));

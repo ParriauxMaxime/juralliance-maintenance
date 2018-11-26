@@ -1,20 +1,20 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Switch,
+  Router, Route, Switch,
 } from 'react-router-dom';
 import Etablissements from '../screen/admin/Etablissements';
 
-const AdminRouter = ({ children }) => (
-  <Router>
-    <React.Fragment>
 
-      {children}
+const AdminRouter = ({ children, history }) => (
+  <React.Fragment>
+    {children}
+    <Router history={history}>
       <Switch>
         <Route path="/etablissements" component={Etablissements} />
         <Route path="*" component={null} />
       </Switch>
-    </React.Fragment>
-  </Router>
+    </Router>
+  </React.Fragment>
 );
 
 export default AdminRouter;

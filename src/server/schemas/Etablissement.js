@@ -6,7 +6,6 @@ const Etablissement = new mongoose.Schema({
   name: String,
   address: String,
   agents: [ObjectId],
-
 });
 
 export default Etablissement;
