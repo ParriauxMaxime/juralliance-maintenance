@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
-  OPEN_MODAL, Action, CLOSE_MODAL, SUBMIT_NEW_ETABLISSEMENT, DELETE,
+  OPEN_MODAL, Action, CLOSE_MODAL, DELETE, INSERT,
 } from '../../reducer/action';
 import store from '../../utils/store';
 import { unnormalize } from '../../utils';
@@ -12,9 +12,9 @@ import TableData from '../../component/TableData';
 import { fetchAPI } from '../../utils/apiManager';
 
 
-const reducer = 'etablissement';
+const reducer = 'user';
 
-function Etablissements({
+function Users({
   classes,
   rows,
   fields,
@@ -23,9 +23,9 @@ function Etablissements({
   openModal,
   closeModal,
   fetch,
-  insertEtablissement,
-  fetchEtablissement,
-  deleteEtablissement,
+  insertUser,
+  fetchUser,
+  deleteUser,
   history,
 }: {
   classes: Object,
@@ -37,9 +37,9 @@ function Etablissements({
   openModal: Function,
   history: {push: Function},
   closeModal: Function,
-  insertEtablissement: Function,
-  deleteEtablissement: Function,
-  fetchEtablissement: Function,
+  insertUser: Function,
+  deleteUser: Function,
+  fetchUser: Function,
 }) {
   return (
     <TableData
@@ -53,17 +53,17 @@ function Etablissements({
       openModal={openModal}
       closeModal={closeModal}
       fetch={fetch}
-      fetchData={fetchEtablissement}
-      insertData={insertEtablissement}
-      deleteData={deleteEtablissement}
+      fetchData={fetchUser}
+      insertData={insertUser}
+      deleteData={deleteUser}
 
     />
   );
 }
 
-const ms = ({ etablissement: { form, byId, fetch } }, ownProps) => ({
+const ms = ({ user: { form, byId, fetch } }, ownProps) => ({
   ...ownProps,
-  fields: ['name', 'address'],
+  fields: ['firstname', 'lastname', 'username', 'type'],
   rows: unnormalize(byId),
   mapping: {},
   fetch,
@@ -73,22 +73,23 @@ const ms = ({ etablissement: { form, byId, fetch } }, ownProps) => ({
 
 
 const md = (dispatch, ownProps) => ({
-  fetchEtablissement: async () => fetchAPI(reducer),
-  insertEtablissement: async () => {
-    const { etablissement } = store.getState();
+  fetchUser: async () => fetchAPI(reducer),
+  insertUser: async () => {
+    const { user } = store.getState();
     const data = {
-      ...etablissement.form,
+      ...user.form,
       modal: undefined,
     };
     return fetchAPI(reducer, data, 'insert')
-      .then(() => {
-        dispatch(new Action(SUBMIT_NEW_ETABLISSEMENT));
+      .then(async () => {
+        dispatch(new Action(INSERT));
+        return fetchAPI(reducer);
       })
       .catch((err) => {
         console.warn(err);
       });
   },
-  deleteEtablissement: async idEtablissement => fetchAPI(reducer, { _id: idEtablissement }, 'delete')
+  deleteUser: async idEtablissement => fetchAPI(reducer, { _id: idEtablissement }, 'delete')
     .then((res) => {
       dispatch(new Action(DELETE, { _id: idEtablissement }));
     }).catch((e) => {
@@ -110,4 +111,4 @@ export default withRouter(connect(ms, md)(withStyles(theme => ({
     margin: 50,
     top: '20vh',
   },
-}))(Etablissements)));
+}))(Users)));

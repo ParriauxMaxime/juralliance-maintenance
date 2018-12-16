@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Grow } from '@material-ui/core';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { Router, Route } from 'react-router-dom';
 import Redirect from 'react-router-dom/Redirect';
@@ -37,9 +37,11 @@ function Base({
                   <div className={classes.root}>
                     <Appbar />
                     <div className={classes.content}>
-                      <AdminRouter history={history}>
-                        <MenuDrawer />
-                      </AdminRouter>
+                      <Grow in>
+                        <AdminRouter history={history}>
+                          <MenuDrawer />
+                        </AdminRouter>
+                      </Grow>
                     </div>
                   </div>
                 );

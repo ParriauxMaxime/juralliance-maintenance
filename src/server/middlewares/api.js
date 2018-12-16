@@ -31,6 +31,15 @@ export const apiMiddleware = async (req, res, next) => {
       }
       break;
     }
+    case 'update': {
+      try {
+        data.data = await model.updateOne({ _id: rest._id }, rest);
+      } catch (err) {
+        status = 500;
+        data.error = err;
+      }
+      break;
+    }
     case 'delete': {
       try {
         data.data = await model.deleteOne({ _id: rest._id });

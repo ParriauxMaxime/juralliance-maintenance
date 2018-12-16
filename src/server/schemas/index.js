@@ -1,13 +1,9 @@
 import EtablissementSchema from './Etablissement';
-import AdminSchema from './Admin';
-import AgentSchema from './Agent';
-import DirectionSchema from './Direction';
+import UserSchema from './User';
 
 export const schemas = {
   EtablissementSchema,
-  AdminSchema,
-  DirectionSchema,
-  AgentSchema,
+  UserSchema,
 };
 
 export default schemas;

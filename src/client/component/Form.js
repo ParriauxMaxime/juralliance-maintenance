@@ -18,6 +18,7 @@ function Form({
         model.keys.map((key) => {
           const { component: Component, ...props } = model[key];
           const { sm, md } = model.ui[key];
+          console.info(model, form);
           return (
             <Grid className={classes.item} item key={key} sm={sm} md={md}>
               <Component {...props} value={form[key]} />

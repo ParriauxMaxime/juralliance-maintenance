@@ -39,12 +39,10 @@ export class DBManager {
 
   loadModels = () => {
     const {
-      EtablissementSchema, AdminSchema, AgentSchema, DirectionSchema,
+      EtablissementSchema, UserSchema,
     } = schemas;
+    mongoose.model('user', UserSchema);
     mongoose.model('etablissement', EtablissementSchema);
-    mongoose.model('admin', AdminSchema);
-    mongoose.model('agent', AgentSchema);
-    mongoose.model('direction', DirectionSchema);
     console.log('-- models loaded');
   }
 }

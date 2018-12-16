@@ -12,18 +12,17 @@ const mapModels = async (models: [string], username): [Object] => {
 export const hashSaltPassword = () => {
 };
 
+const admin = 'admin';
+const agent = 'agent';
+const direction = 'direction';
+
+
 export default async (req: Object, res: Object, next: Function) => {
   const response = {
     data: {},
     error: null,
   };
   let status = 200;
-  console.info(req.user);
-  const { body: { username, password } } = req;
-  const [admin, agent, direction] = await mapModels(['admin', 'agent', 'direction'], username);
-  console.info('admin', admin);
-  console.info('agent', agent);
-  console.info('direction', direction);
   const UserNameNotFound = () => {
     status = 401;
     response.error = `User ${username} not found`;
@@ -32,33 +31,19 @@ export default async (req: Object, res: Object, next: Function) => {
     status = 401;
     response.error = 'Username / password tupple mismatch';
   };
-  if (admin) {
-    const pwd = bcrypt.hashSync(password, admin.password ? bcrypt.getRounds(admin.password) : 10);
-    const auth = bcrypt.compareSync(password, admin.password);
-    if (auth) {
-      response.data.admin = jwt.sign({ admin_token: admin._id }, secret);
-    } else {
-      WrongPassword();
-    }
-  } else if (direction) {
-    const auth = bcrypt.compareSync(password, direction.password);
-    if (auth) {
-      response.data.direction = jwt.sign({ direction_token: direction._id }, secret);
-    } else {
-      WrongPassword();
-    }
-  } else if (agent) {
-    const auth = bcrypt.compareSync(password, agent.password);
-    if (auth) {
-      response.data.agent = jwt.sign({ agent_token: agent._id }, secret);
-    } else {
-      WrongPassword();
-    }
-  } else {
+  console.info(req.user);
+  const { body: { username, password } } = req;
+  try {
+    const [user] = await mapModels(['user'], username);
+    const { password: dbPwd, type, _id } = user;
+    const auth = bcrypt.compareSync(password, dbPwd);
+    if (auth) { response.data[type] = jwt.sign({ [`${type}_token`]: _id }, secret); }
+    // const pwd = bcrypt.hashSync(password, password ? bcrypt.getRounds(password) : 10);
+    else { WrongPassword(); }
+  } catch (err) {
     UserNameNotFound();
+  } finally {
+    res.status(status).json(response).send();
   }
-  // if ()
-  // response.data.access_token
-  res.status(status).json(response).send();
   next();
 };

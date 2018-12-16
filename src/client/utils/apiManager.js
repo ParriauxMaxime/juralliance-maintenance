@@ -1,5 +1,16 @@
 import store from './store';
-import { Action, SNACKBAR_DISPATCH } from '../reducer/action';
+import {
+  Action, SNACKBAR_DISPATCH, FETCH, INSERT, DELETE,
+} from '../reducer/action';
+
+const getActionType = (type) => {
+  switch (type) {
+    case 'find': return FETCH;
+    case 'insert': return INSERT;
+    case 'delete': return DELETE;
+    default: return '';
+  }
+};
 
 export const fetchAPI = async (api, body, type = 'find') => {
   const url = `http://localhost:8080/api/${api}`;
@@ -17,7 +28,11 @@ export const fetchAPI = async (api, body, type = 'find') => {
   };
   // eslint-disable-next-line
   return fetch(url, options)
-    .then(async res => ({ body: await res.json(), res }));
+    .then(async res => ({ body: await res.json(), res }))
+    .then(({ body }) => {
+      store.dispatch(new Action(getActionType(type), { [api]: body.data, reducer: api }));
+      return body.data;
+    });
 };
 
 export const fetchEndpoint = async (endpoint, body) => {
@@ -42,6 +57,3 @@ export const fetchEndpoint = async (endpoint, body) => {
       return { res, body };
     });
 };
-
-
-export default fetchAPI;

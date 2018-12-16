@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import {
   SORT_TABLE,
-  ETABLISSEMENT_FORM_CHANGE,
+  USER_FORM_CHANGE,
   OPEN_MODAL,
   CLOSE_MODAL,
   SUBMIT_NEW_ETABLISSEMENT,
@@ -9,7 +9,6 @@ import {
   FETCH_ETABLISSEMENT,
   FETCH,
   INSERT,
-  UPDATE,
 } from './action';
 import { Etablissement } from '../utils/mocks';
 
@@ -19,9 +18,10 @@ const initialState = {
     order: 'desc',
   },
   form: {
-    name: '',
-    address: '',
-    agents: [],
+    firstname: '',
+    lastname: '',
+    username: '',
+    type: '',
     modal: false,
   },
   byId: {
@@ -30,7 +30,7 @@ const initialState = {
   allIds: [],
 };
 
-const etablissement = 'etablissement';
+const user = 'user';
 
 const orderToBool = (order) => {
   if (order === undefined) return undefined;
@@ -38,15 +38,14 @@ const orderToBool = (order) => {
   return false;
 };
 
-const normalizeById = (data: [Etablissement]) => data.reduce((acc, e, i) => ({ ...acc, [e._id]: { ...e, _id: e._id } }), {});
-const mapIds = (data: [Etablissement]) => data.map(e => e._id);
+const normalizeById = data => data.reduce((acc, e, i) => ({ ...acc, [e._id]: { ...e, _id: e._id } }), {});
+const mapIds = data => data.map(e => e._id);
 const unique = data => data.filter((e, i) => data.indexOf(e) === i);
 
 const reducer = (state = initialState, { type, data }) => {
-  console.info(type, data);
   switch (type) {
     case SORT_TABLE: {
-      if (data.reducer === etablissement) {
+      if (data.reducer === user) {
         return {
           ...state,
           tableOptions: {
@@ -89,21 +88,21 @@ const reducer = (state = initialState, { type, data }) => {
       };
     }
     case FETCH: {
-      if (data.reducer !== etablissement) return state;
+      if (data.reducer !== user) return state;
       return {
         ...state,
         fetch: Date.now(),
         byId: {
           ...state.byId,
-          ...normalizeById(data[etablissement]),
+          ...normalizeById(data[user]),
         },
         allId: unique([
           ...state.allIds,
-          ...mapIds(data[etablissement]),
+          ...mapIds(data[user]),
         ]),
       };
     }
-    case ETABLISSEMENT_FORM_CHANGE: {
+    case USER_FORM_CHANGE: {
       return {
         ...state,
         form: {

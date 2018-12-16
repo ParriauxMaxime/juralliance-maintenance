@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     username,
     password,
   }).then((res) => {
-    if (res.body.data.admin) {
+    if (res?.body?.data?.admin) {
       dispatch(new Action(LOG_IN, { type: 'admin', token: res.body.data.admin }));
       ownProps.history.replace('/');
     }
