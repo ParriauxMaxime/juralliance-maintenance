@@ -38,6 +38,7 @@ module.exports = {
   devServer: {
     // entry: 'src/client/index.html',
     contentBase: path.join(__dirname, 'dist'),
+    historyApiFallback: true,
     compress: true,
     port: 3000,
   },

@@ -30,6 +30,13 @@ function Base({
             }}
           />
           <Route
+            path="/new-connection"
+            render={() => {
+              if (admin || agent || direction) return <Redirect to="/" />;
+              return <div>Hello world</div>;
+            }}
+          />
+          <Route
             path="*"
             render={() => {
               if (admin) {

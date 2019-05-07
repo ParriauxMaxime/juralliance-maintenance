@@ -2,6 +2,7 @@ import jwt from 'express-jwt';
 import { apiMiddleware } from './middlewares/api';
 import loginMiddleware from './middlewares/login';
 import db from './dbManager';
+import cors from 'cors';
 import { secret } from './conf';
 
 const express = require('express');
@@ -21,6 +22,7 @@ const port = 8080;
 db.connect();
 
 app.use(bodyParser.json());
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(history());
 app.use(webpackDevMiddleware(compiler, {

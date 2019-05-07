@@ -14,6 +14,7 @@ export const apiMiddleware = async (req, res, next) => {
   switch (type) {
     case 'insert': {
       try {
+        console.info('=> data', req.body);
         await model.create(rest);
         data.data = { rest };
       } catch (err) {

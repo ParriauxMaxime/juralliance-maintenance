@@ -3,9 +3,9 @@ import store from '../utils/store';
 import { Action, USER_FORM_CHANGE } from '../reducer/action';
 import UserTypePicker from '../component/UserTypePicker';
 
-const onTextFieldChange = ({ target: { name, value } }) => (
-  store.dispatch(new Action(USER_FORM_CHANGE, { name, value }))
-);
+const onTextFieldChange = ({ target: { name, value } }) => {
+  store.dispatch(new Action(USER_FORM_CHANGE, { name, value }));
+};
 
 const resp = (sm, md) => ({ sm, md: md || sm });
 

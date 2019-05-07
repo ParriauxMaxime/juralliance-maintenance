@@ -16,7 +16,6 @@ export const fetchAPI = async (api, body, type = 'find') => {
   const url = `http://localhost:8080/api/${api}`;
 
   const options = {
-    mode: 'same-origin',
     method: 'post',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -39,7 +38,6 @@ export const fetchEndpoint = async (endpoint, body) => {
   const url = `http://localhost:8080/${endpoint}`;
 
   const options = {
-    mode: 'same-origin',
     method: 'post',
     headers: new Headers({
       'Content-Type': 'application/json',

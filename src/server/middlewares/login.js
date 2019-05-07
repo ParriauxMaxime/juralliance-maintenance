@@ -23,6 +23,9 @@ export default async (req: Object, res: Object, next: Function) => {
     error: null,
   };
   let status = 200;
+  const FirstConnection = () => {
+    response.data.firstConnection = true;
+  };
   const UserNameNotFound = () => {
     status = 401;
     response.error = `User ${username} not found`;
@@ -36,8 +39,10 @@ export default async (req: Object, res: Object, next: Function) => {
   try {
     const [user] = await mapModels(['user'], username);
     const { password: dbPwd, type, _id } = user;
-    const auth = bcrypt.compareSync(password, dbPwd);
-    if (auth) { response.data[type] = jwt.sign({ [`${type}_token`]: _id }, secret); }
+    const auth = bcrypt.compareSync(password || '', dbPwd || '');
+    if (!dbPwd) {
+      FirstConnection();
+    } else if (auth) { response.data[type] = jwt.sign({ [`${type}_token`]: _id }, secret); }
     // const pwd = bcrypt.hashSync(password, password ? bcrypt.getRounds(password) : 10);
     else { WrongPassword(); }
   } catch (err) {
